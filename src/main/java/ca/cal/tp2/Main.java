@@ -1,6 +1,5 @@
 package ca.cal.tp2;
 
-import ca.cal.tp2.Models.Utilisateur;
 import ca.cal.tp2.Persistences.EmprunteurRepositoryJPA;
 import ca.cal.tp2.Persistences.UtilisateurRepositoryJPA;
 import ca.cal.tp2.Services.EmprunteurService;
