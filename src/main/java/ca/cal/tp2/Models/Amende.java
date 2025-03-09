@@ -18,7 +18,7 @@ public class Amende {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column
     private double montant;
 
     @Temporal(TemporalType.DATE)

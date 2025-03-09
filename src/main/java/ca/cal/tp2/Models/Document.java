@@ -35,4 +35,19 @@ public abstract class Document {
 
     @Column(nullable = false)
     private int dureeMaxEmprunt;
+
+    @Column(nullable = false)
+    private int nombreExemplaires;
+
+
+
+    public Document(String titre, String auteur, String editeur, int anneePublication, boolean disponible, int dureeMaxEmprunt, int nombreExemplaires) {
+        this.titre = titre;
+        this.auteur = auteur;
+        this.editeur = editeur;
+        this.anneePublication = anneePublication;
+        this.disponible = disponible;
+        this.dureeMaxEmprunt = dureeMaxEmprunt;
+        this.nombreExemplaires = nombreExemplaires;
+    }
 }

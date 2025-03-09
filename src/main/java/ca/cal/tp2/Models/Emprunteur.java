@@ -17,12 +17,14 @@ import java.util.List;
 @DiscriminatorValue("emprunteur")
 @Entity
 public class Emprunteur extends Utilisateur {
-    @OneToMany(mappedBy = "emprunteur", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "emprunteur", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Emprunt> emprunts;
 
-    @OneToMany(mappedBy = "emprunteur", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "emprunteur", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Amende> amendes;
     public Emprunteur(String nom, String prenom, List<Emprunt> emprunts, List<Amende> amendes) {
         super(nom, prenom);
+        this.emprunts = emprunts;
+        this.amendes = amendes;
     }
 }
