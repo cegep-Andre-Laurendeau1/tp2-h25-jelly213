@@ -23,4 +23,21 @@ public class CD extends Document {
         super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt, nombreExemplaires);
         this.duree = duree;
     }
+
+    // Méthode inutile pour CD
+    @Override
+    public int getNombrePages() {
+        return 0;
+    }
+
+    // Méthode inutile pour CD
+    @Override
+    public int getDureeDVD() {
+        return 0;
+    }
+
+    @Override
+    public int getDureeCD() {
+        return duree;
+    }
 }

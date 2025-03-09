@@ -23,4 +23,21 @@ public class DVD extends Document {
         super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt,  nombreExemplaires);
         this.duree = duree;
     }
+
+    // Méthode inutile pour DVD
+    @Override
+    public int getNombrePages() {
+        return 0;
+    }
+
+    @Override
+    public int getDureeDVD() {
+        return duree;
+    }
+
+    // Méthode inutile pour DVD
+    @Override
+    public int getDureeCD() {
+        return 0;
+    }
 }

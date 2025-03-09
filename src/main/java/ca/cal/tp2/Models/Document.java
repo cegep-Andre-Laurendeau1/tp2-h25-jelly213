@@ -50,4 +50,18 @@ public abstract class Document {
         this.dureeMaxEmprunt = dureeMaxEmprunt;
         this.nombreExemplaires = nombreExemplaires;
     }
+
+    public String getType() {
+        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+    }
+
+    // get nombrePages from child Livre
+    public abstract int getNombrePages();
+
+    // get duree from child DVD
+    public abstract int getDureeDVD();
+
+    // get duree from child CD
+    public abstract int getDureeCD();
+
 }

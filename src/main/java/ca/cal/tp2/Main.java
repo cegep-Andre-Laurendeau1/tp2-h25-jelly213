@@ -43,7 +43,14 @@ public class Main {
 
         dvdService.createDVD(new DVD("Inception", "Christopher Nolan", "Warner Bros", 2010, true, 5, 1, 120));
 
+        // Recherche d'un livre selon le titre, l'auteur et l'année
+        DocumentService documentService = new DocumentService(new DocumentRepositoryJPA());
 
+        System.out.println(documentService.getDocumentsByPartialTitleFormatted("Le"));
+        System.out.println("--------------------------------------------------");
+        System.out.println(documentService.getDocumentsByAuthorFormatted("J.K. Rowling"));
+        System.out.println("--------------------------------------------------");
+        System.out.println(documentService.getDocumentsByYearFormatted(1942));
         Thread.currentThread().join();
     }
 }

@@ -23,4 +23,17 @@ public class Livre extends Document {
         super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt, nombreExemplaires);
         this.nombrePages = nombrePages;
     }
+
+
+    // Méthode inutile pour Livre
+    @Override
+    public int getDureeDVD() {
+        return 0;
+    }
+
+    // Méthode inutile pour Livre
+    @Override
+    public int getDureeCD() {
+        return 0;
+    }
 }
