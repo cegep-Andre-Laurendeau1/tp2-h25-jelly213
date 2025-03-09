@@ -1,15 +1,10 @@
 package ca.cal.tp2;
 
 import ca.cal.tp2.Models.CD;
+import ca.cal.tp2.Models.DVD;
 import ca.cal.tp2.Models.Livre;
-import ca.cal.tp2.Persistences.CDRepositoryJPA;
-import ca.cal.tp2.Persistences.EmprunteurRepositoryJPA;
-import ca.cal.tp2.Persistences.LivreRepositoryJPA;
-import ca.cal.tp2.Persistences.UtilisateurRepositoryJPA;
-import ca.cal.tp2.Services.CDService;
-import ca.cal.tp2.Services.EmprunteurService;
-import ca.cal.tp2.Services.LivreService;
-import ca.cal.tp2.Services.UtilisateurService;
+import ca.cal.tp2.Persistences.*;
+import ca.cal.tp2.Services.*;
 import ca.cal.tp2.Utils.TcpServer;
 
 import java.sql.SQLException;
@@ -42,6 +37,11 @@ public class Main {
         CDService cdService = new CDService(new CDRepositoryJPA());
 
         cdService.createCD(new CD("Thriller", "Michael Jackson", "Epic Records", 1982, true, 10, 1, 120));
+
+        // Ajout d'un DVD
+        DVDService dvdService = new DVDService(new DVDRepositoryJPA());
+
+        dvdService.createDVD(new DVD("Inception", "Christopher Nolan", "Warner Bros", 2010, true, 5, 1, 120));
 
 
         Thread.currentThread().join();
