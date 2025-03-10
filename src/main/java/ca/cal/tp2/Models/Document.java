@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,38 +19,19 @@ import lombok.Setter;
 public abstract class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long documentId;
 
     @Column(nullable = false)
     private String titre;
 
     @Column(nullable = false)
-    private String auteur;
-
-    @Column(nullable = false)
-    private String editeur;
-
-    @Column(nullable = false)
-    private int anneePublication;
-
-    @Column(nullable = false)
-    private boolean disponible;
-
-    @Column(nullable = false)
-    private int dureeMaxEmprunt;
-
-    @Column(nullable = false)
     private int nombreExemplaires;
 
+    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
+    private List<EmpruntDetail> empruntDetails = new ArrayList<>();
 
-
-    public Document(String titre, String auteur, String editeur, int anneePublication, boolean disponible, int dureeMaxEmprunt, int nombreExemplaires) {
+    public Document(String titre, int nombreExemplaires) {
         this.titre = titre;
-        this.auteur = auteur;
-        this.editeur = editeur;
-        this.anneePublication = anneePublication;
-        this.disponible = disponible;
-        this.dureeMaxEmprunt = dureeMaxEmprunt;
         this.nombreExemplaires = nombreExemplaires;
     }
 
@@ -55,13 +39,7 @@ public abstract class Document {
         return this.getClass().getAnnotation(DiscriminatorValue.class).value();
     }
 
-    // get nombrePages from child Livre
-    public abstract int getNombrePages();
-
-    // get duree from child DVD
-    public abstract int getDureeDVD();
-
-    // get duree from child CD
-    public abstract int getDureeCD();
-
+    public boolean verifierDisponibilite() {
+        return nombreExemplaires > 0;
+    }
 }

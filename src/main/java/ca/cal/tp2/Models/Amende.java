@@ -16,15 +16,35 @@ import java.util.Date;
 public class Amende {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column
-    private double montant;
-
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    private long fineId;
 
     @ManyToOne
     @JoinColumn(name = "emprunteur_id")
     private Emprunteur emprunteur;
+
+    @Column
+    private double montant;
+
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Date dateCreation;
+
+    @Column
+    private boolean status;
+
+    public Amende(Emprunteur emprunteur, double montant) {
+        this.emprunteur = emprunteur;
+        this.montant = montant;
+        this.dateCreation = new Date();
+        this.status = false; // Non payée par défaut
+    }
+
+    public double calculMontant() {
+        // Cette méthode pourrait appliquer des intérêts ou des pénalités supplémentaires
+        return montant;
+    }
+
+    public void updateStatus() {
+        status = true; // Marque l'amende comme payée
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,23 +18,29 @@ import java.util.List;
 public class Emprunt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long borrowId;
 
     @ManyToOne
     @JoinColumn(name = "emprunteur_id", nullable = false)
     private Emprunteur emprunteur;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date dateEmprunt;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date dateRetourPrevu;
-
-    @Temporal(TemporalType.DATE)
-    private Date dateRetourReel;
+    private String status;
 
     @OneToMany(mappedBy = "emprunt", cascade = CascadeType.ALL)
-    private List<EmpruntDocument> empruntDocuments;
+    private List<EmpruntDetail> empruntDetails = new ArrayList<>();
+
+    public Emprunt(Emprunteur emprunteur, Date dateEmprunt) {
+        this.emprunteur = emprunteur;
+        this.dateEmprunt = dateEmprunt;
+        this.status = "En cours";
+    }
+
+    public List<EmpruntDetail> getItems() {
+        return empruntDetails;
+    }
 }

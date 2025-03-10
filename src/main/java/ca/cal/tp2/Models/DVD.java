@@ -15,29 +15,19 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("DVD")
 public class DVD extends Document {
+    @Column
+    private String director;
 
     @Column
     private int duree;
 
-    public DVD(String titre, String auteur, String editeur, int anneePublication, boolean disponible, int dureeMaxEmprunt, int nombreExemplaires, int duree) {
-        super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt,  nombreExemplaires);
+    @Column
+    private String rating;
+
+    public DVD(String titre, int nombreExemplaires, String director, int duree, String rating) {
+        super(titre, nombreExemplaires);
+        this.director = director;
         this.duree = duree;
-    }
-
-    // Méthode inutile pour DVD
-    @Override
-    public int getNombrePages() {
-        return 0;
-    }
-
-    @Override
-    public int getDureeDVD() {
-        return duree;
-    }
-
-    // Méthode inutile pour DVD
-    @Override
-    public int getDureeCD() {
-        return 0;
+        this.rating = rating;
     }
 }

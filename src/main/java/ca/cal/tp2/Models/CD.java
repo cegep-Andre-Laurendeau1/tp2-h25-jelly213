@@ -15,29 +15,19 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("CD")
 public class CD extends Document {
+    @Column
+    private String artiste;
 
     @Column
     private int duree;
 
-    public CD(String titre, String auteur, String editeur, int anneePublication, boolean disponible, int dureeMaxEmprunt, int nombreExemplaires, int duree) {
-        super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt, nombreExemplaires);
+    @Column
+    private String genre;
+
+    public CD(String titre, int nombreExemplaires, String artiste, int duree, String genre) {
+        super(titre, nombreExemplaires);
+        this.artiste = artiste;
         this.duree = duree;
-    }
-
-    // Méthode inutile pour CD
-    @Override
-    public int getNombrePages() {
-        return 0;
-    }
-
-    // Méthode inutile pour CD
-    @Override
-    public int getDureeDVD() {
-        return 0;
-    }
-
-    @Override
-    public int getDureeCD() {
-        return duree;
+        this.genre = genre;
     }
 }

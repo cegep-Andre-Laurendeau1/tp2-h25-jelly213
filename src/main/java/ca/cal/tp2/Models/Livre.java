@@ -15,25 +15,23 @@ import lombok.Setter;
 @Entity
 @DiscriminatorValue("Livre")
 public class Livre extends Document {
+    @Column
+    private String ISBN;
+
+    @Column
+    private String auteur;
+
+    @Column
+    private String editeur;
 
     @Column
     private int nombrePages;
 
-    public Livre(String titre, String auteur, String editeur, int anneePublication, boolean disponible, int dureeMaxEmprunt, int nombrePages, int nombreExemplaires) {
-        super(titre, auteur, editeur, anneePublication, disponible, dureeMaxEmprunt, nombreExemplaires);
+    public Livre(String titre, int nombreExemplaires, String ISBN, String auteur, String editeur, int nombrePages) {
+        super(titre, nombreExemplaires);
+        this.ISBN = ISBN;
+        this.auteur = auteur;
+        this.editeur = editeur;
         this.nombrePages = nombrePages;
-    }
-
-
-    // Méthode inutile pour Livre
-    @Override
-    public int getDureeDVD() {
-        return 0;
-    }
-
-    // Méthode inutile pour Livre
-    @Override
-    public int getDureeCD() {
-        return 0;
     }
 }

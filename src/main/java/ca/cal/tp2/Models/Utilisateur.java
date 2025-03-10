@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,29 +17,31 @@ public abstract class Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long userID;
 
-    @Column()
-    private String nom;
+    @Column(nullable = false)
+    private String name;
 
-    @Column()
-    private String prenom;
+    @Column
+    private String email;
 
-    public Utilisateur(String nom, String prenom) {
-        this.nom = nom;
-        this.prenom = prenom;
+    @Column
+    private String phoneNumber;
+
+    public Utilisateur(String name, String email, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
-    //get Role from DiscriminatorColumn
+    // Méthode pour obtenir le rôle de l'utilisateur
     public String getRole() {
         return this.getClass().getAnnotation(DiscriminatorValue.class).value();
     }
 
-    //get List of Emprunts from child table Emprunteur
-    public abstract List<Emprunt> getEmprunts();
-
-    //get List of Amendes from child table Emprunteur
-    public abstract List<Amende> getAmendes();
-
-
+    // Méthode de login (pourrait être implémentée dans une version future)
+    public boolean login() {
+        // Implémentation de base, à enrichir selon les besoins
+        return true;
+    }
 }
