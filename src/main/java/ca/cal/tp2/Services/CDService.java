@@ -13,7 +13,7 @@ public class CDService {
         this.documentRepository = documentRepository;
     }
 
-    public void ajouterCD(String titre, int nombreExemplaires, String artiste, int duree, String genre) {
+    public void ajouterCD(String titre,int anneePublication ,int nombreExemplaires, String artiste, int duree, String genre) {
         // Vérifier si les informations sont valides
         if (titre == null || titre.trim().isEmpty()) {
             throw new IllegalArgumentException("Le titre du CD ne peut pas être vide");
@@ -29,7 +29,7 @@ public class CDService {
         }
 
         // Créer le nouveau CD
-        CD nouveauCD = new CD(titre, nombreExemplaires, artiste, duree, genre);
+        CD nouveauCD = new CD(titre, anneePublication, nombreExemplaires, artiste, duree, genre);
 
         // Sauvegarder le CD
         cdRepository.save(nouveauCD);

@@ -24,8 +24,9 @@ public class DVD extends Document {
     @Column
     private String rating;
 
-    public DVD(String titre, int nombreExemplaires, String director, int duree, String rating) {
-        super(titre, nombreExemplaires);
+    // DVD.java - Constructeur mis à jour
+    public DVD(String titre, int nombreExemplaires, int anneePublication, String director, int duree, String rating) {
+        super(titre, nombreExemplaires, anneePublication);
         this.director = director;
         this.duree = duree;
         this.rating = rating;

@@ -14,7 +14,7 @@ public class LivreService {
         this.documentRepository = documentRepository;
     }
 
-    public void ajouterLivre(String titre, int nombreExemplaires, String ISBN, String auteur, String editeur, int nombrePages) {
+    public void ajouterLivre(String titre, int anneePublication ,int nombreExemplaires, String ISBN, String auteur, String editeur, int nombrePages) {
         // Vérifier si les informations sont valides
         if (titre == null || titre.trim().isEmpty()) {
             throw new IllegalArgumentException("Le titre du livre ne peut pas être vide");
@@ -31,7 +31,7 @@ public class LivreService {
         }
 
         // Créer le nouveau livre
-        Livre nouveauLivre = new Livre(titre, nombreExemplaires, ISBN, auteur, editeur, nombrePages);
+        Livre nouveauLivre = new Livre(titre,anneePublication,nombreExemplaires, ISBN, auteur, editeur, nombrePages);
 
         // Sauvegarder le livre
         livreRepository.save(nouveauLivre);

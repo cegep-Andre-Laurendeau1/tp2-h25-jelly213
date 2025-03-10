@@ -24,8 +24,8 @@ public class CD extends Document {
     @Column
     private String genre;
 
-    public CD(String titre, int nombreExemplaires, String artiste, int duree, String genre) {
-        super(titre, nombreExemplaires);
+    public CD(String titre, int nombreExemplaires, int anneePublication, String artiste, int duree, String genre) {
+        super(titre, nombreExemplaires, anneePublication);
         this.artiste = artiste;
         this.duree = duree;
         this.genre = genre;

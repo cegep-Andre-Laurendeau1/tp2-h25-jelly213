@@ -27,8 +27,9 @@ public class Livre extends Document {
     @Column
     private int nombrePages;
 
-    public Livre(String titre, int nombreExemplaires, String ISBN, String auteur, String editeur, int nombrePages) {
-        super(titre, nombreExemplaires);
+    // Livre.java - Constructeur mis à jour
+    public Livre(String titre, int nombreExemplaires, int anneePublication, String ISBN, String auteur, String editeur, int nombrePages) {
+        super(titre, nombreExemplaires, anneePublication);
         this.ISBN = ISBN;
         this.auteur = auteur;
         this.editeur = editeur;

@@ -30,9 +30,13 @@ public abstract class Document {
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     private List<EmpruntDetail> empruntDetails = new ArrayList<>();
 
-    public Document(String titre, int nombreExemplaires) {
+    @Column
+    private int anneePublication;
+
+    public Document(String titre, int nombreExemplaires, int anneePublication) {
         this.titre = titre;
         this.nombreExemplaires = nombreExemplaires;
+        this.anneePublication = anneePublication;
     }
 
     public String getType() {

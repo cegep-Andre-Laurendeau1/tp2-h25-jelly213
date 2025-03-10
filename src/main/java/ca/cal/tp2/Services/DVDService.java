@@ -13,7 +13,7 @@ public class DVDService {
         this.documentRepository = documentRepository;
     }
 
-    public void ajouterDVD(String titre, int nombreExemplaires, String director, int duree, String rating) {
+    public void ajouterDVD(String titre,int anneePublication, int nombreExemplaires, String director, int duree, String rating) {
         // Vérifier si les informations sont valides
         if (titre == null || titre.trim().isEmpty()) {
             throw new IllegalArgumentException("Le titre du DVD ne peut pas être vide");
@@ -29,7 +29,7 @@ public class DVDService {
         }
 
         // Créer le nouveau DVD
-        DVD nouveauDVD = new DVD(titre, nombreExemplaires, director, duree, rating);
+        DVD nouveauDVD = new DVD(titre,anneePublication,nombreExemplaires, director, duree, rating);
 
         // Sauvegarder le DVD
         dvdRepository.save(nouveauDVD);
