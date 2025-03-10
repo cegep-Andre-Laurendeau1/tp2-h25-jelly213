@@ -1,14 +1,21 @@
 package ca.cal.tp2;
 
 import ca.cal.tp2.Models.Document;
+import ca.cal.tp2.Models.Emprunt;
+import ca.cal.tp2.Models.EmpruntDetail;
 import ca.cal.tp2.Models.Emprunteur;
 import ca.cal.tp2.Persistences.*;
 import ca.cal.tp2.Services.*;
+import ca.cal.tp2.Utils.TcpServer;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException, SQLException {
+
+        TcpServer.startTcpServer();
+
         // Initialisation des repositories
         DocumentRepositoryJPA documentRepository = new DocumentRepositoryJPA();
         LivreRepositoryJPA livreRepository = new LivreRepositoryJPA();
@@ -156,6 +163,114 @@ public class Main {
             System.out.println("Erreur lors de la recherche: " + e.getMessage());
         }
 
+        // Ajout à la classe Main.java
+
+// DÉMONSTRATION DE L'EMPRUNT DE DOCUMENTS
+        System.out.println("\n===== EMPRUNT DE DOCUMENTS =====");
+
+        try {
+            // Initialisation du service d'emprunt
+            EmpruntRepositoryJPA empruntRepository = new EmpruntRepositoryJPA();
+            EmpruntDetailRepositoryJPA empruntDetailRepository = new EmpruntDetailRepositoryJPA();
+            EmpruntService empruntService = new EmpruntService(empruntRepository, empruntDetailRepository, documentRepository);
+
+            // Récupération de l'emprunteur et des documents
+            Emprunteur emprunteur = emprunteurService.getEmprunteurByName("John Doe");
+            Document livre = documentService.getDocumentByTitre("Les Misérables");
+            Document cd = documentService.getDocumentByTitre("Thriller");
+            Document dvd = documentService.getDocumentByTitre("Inception");
+            Document livreRare = documentService.getDocumentByTitre("Crime et Châtiment");
+
+            // Vérifier la disponibilité avant l'emprunt
+            System.out.println("\n--- Disponibilité avant emprunt ---");
+            System.out.println("'Les Misérables': " + livre.getNombreExemplaires() + " exemplaires disponibles");
+            System.out.println("'Thriller': " + cd.getNombreExemplaires() + " exemplaires disponibles");
+            System.out.println("'Inception': " + dvd.getNombreExemplaires() + " exemplaires disponibles");
+            System.out.println("'Crime et Châtiment': " + livreRare.getNombreExemplaires() + " exemplaires disponibles");
+
+            // 1. Emprunt de documents avec exemplaires disponibles
+            System.out.println("\n--- Emprunt de documents disponibles ---");
+
+            EmpruntDetail empruntLivre = empruntService.emprunterDocument(emprunteur, livre);
+            if (empruntLivre != null) {
+                System.out.println("✅ 'Les Misérables' emprunté avec succès.");
+                System.out.println("  Date de retour prévue: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(empruntLivre.getDateRetourPrevue()));
+                System.out.println("  Exemplaires restants: " + livre.getNombreExemplaires());
+            } else {
+                System.out.println("❌ Impossible d'emprunter 'Les Misérables'.");
+            }
+
+            EmpruntDetail empruntCD = empruntService.emprunterDocument(emprunteur, cd);
+            if (empruntCD != null) {
+                System.out.println("✅ 'Thriller' emprunté avec succès.");
+                System.out.println("  Date de retour prévue: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(empruntCD.getDateRetourPrevue()));
+                System.out.println("  Exemplaires restants: " + cd.getNombreExemplaires());
+            } else {
+                System.out.println("❌ Impossible d'emprunter 'Thriller'.");
+            }
+
+            EmpruntDetail empruntDVD = empruntService.emprunterDocument(emprunteur, dvd);
+            if (empruntDVD != null) {
+                System.out.println("✅ 'Inception' emprunté avec succès.");
+                System.out.println("  Date de retour prévue: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format(empruntDVD.getDateRetourPrevue()));
+                System.out.println("  Exemplaires restants: " + dvd.getNombreExemplaires());
+            } else {
+                System.out.println("❌ Impossible d'emprunter 'Inception'.");
+            }
+
+            // 2. Test d'emprunt de tous les exemplaires disponibles
+            System.out.println("\n--- Test d'emprunt de tous les exemplaires ---");
+
+            // Emprunter tous les exemplaires restants de "Crime et Châtiment"
+            int exemplairesCrime = livreRare.getNombreExemplaires();
+            System.out.println("'Crime et Châtiment' a " + exemplairesCrime + " exemplaires disponibles.");
+
+            for (int i = 0; i < exemplairesCrime; i++) {
+                EmpruntDetail emprunt = empruntService.emprunterDocument(emprunteur, livreRare);
+                if (emprunt != null) {
+                    System.out.println("✅ 'Crime et Châtiment' exemplaire #" + (i+1) + " emprunté avec succès.");
+                    System.out.println("  Exemplaires restants: " + livreRare.getNombreExemplaires());
+                } else {
+                    System.out.println("❌ Impossible d'emprunter 'Crime et Châtiment'.");
+                }
+            }
+
+            // 3. Test d'emprunt d'un document sans exemplaires disponibles
+            System.out.println("\n--- Test d'emprunt d'un document sans exemplaires disponibles ---");
+
+            EmpruntDetail empruntImpossible = empruntService.emprunterDocument(emprunteur, livreRare);
+            if (empruntImpossible != null) {
+                System.out.println("✅ 'Crime et Châtiment' emprunté avec succès.");
+            } else {
+                System.out.println("❌ Impossible d'emprunter 'Crime et Châtiment' - Aucun exemplaire disponible.");
+            }
+
+            // 4. Affichage des emprunts de l'utilisateur
+            System.out.println("\n--- Liste des emprunts de l'utilisateur ---");
+
+            List<Emprunt> emprunts = empruntService.getEmpruntsByEmprunteur(emprunteur);
+            System.out.println("Nombre d'emprunts: " + emprunts.size());
+
+            for (Emprunt emprunt : emprunts) {
+                System.out.println(empruntService.formaterEmprunt(emprunt));
+            }
+
+            // 5. Test de retour d'un document
+            System.out.println("\n--- Test de retour d'un document ---");
+
+            if (empruntService.retournerDocument(empruntLivre)) {
+                System.out.println("✅ 'Les Misérables' retourné avec succès.");
+                System.out.println("  Exemplaires disponibles maintenant: " + livre.getNombreExemplaires());
+            } else {
+                System.out.println("❌ Impossible de retourner 'Les Misérables'.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors des opérations d'emprunt: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         System.out.println("\n===== FIN DE LA DÉMONSTRATION =====");
+        Thread.currentThread().join();
     }
 }

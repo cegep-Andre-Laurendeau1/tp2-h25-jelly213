@@ -18,7 +18,16 @@ public class DocumentRepositoryJPA implements DocumentRepository {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(document);
+
+            // Vérifier si l'entité est nouvelle ou existante
+            if (document.getDocumentId() == 0) {
+                // Nouvelle entité
+                em.persist(document);
+            } else {
+                // Entité existante
+                em.merge(document);
+            }
+
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
