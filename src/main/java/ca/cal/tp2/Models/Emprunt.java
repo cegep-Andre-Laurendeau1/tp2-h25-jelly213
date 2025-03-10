@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,5 +43,13 @@ public class Emprunt {
 
     public List<EmpruntDetail> getItems() {
         return empruntDetails;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return "Emprunt #" + borrowId +
+                "\nDate d'emprunt: " + dateFormat.format(dateEmprunt) +
+                "\nStatut: " + status;
     }
 }

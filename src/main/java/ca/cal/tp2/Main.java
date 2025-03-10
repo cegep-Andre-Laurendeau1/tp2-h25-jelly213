@@ -9,6 +9,8 @@ import ca.cal.tp2.Services.*;
 import ca.cal.tp2.Utils.TcpServer;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -267,6 +269,87 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Erreur lors des opérations d'emprunt: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // DÉMONSTRATION DE L'AFFICHAGE DES EMPRUNTS D'UN CLIENT
+        System.out.println("\n===== LISTE DES EMPRUNTS D'UN CLIENT =====");
+
+        try {
+
+            EmpruntRepositoryJPA empruntRepository = new EmpruntRepositoryJPA();
+            EmpruntDetailRepositoryJPA empruntDetailRepository = new EmpruntDetailRepositoryJPA();
+            EmpruntService empruntService = new EmpruntService(empruntRepository, empruntDetailRepository, documentRepository);
+
+
+            // Récupérer le client
+            Emprunteur client = emprunteurService.getEmprunteurByName("John Doe");
+            if (client == null) {
+                System.out.println("Client 'John Doe' non trouvé.");
+                return;
+            }
+
+            // Récupérer d'autres documents pour démontrer différents états d'emprunt
+            Document livreSupplementaire = documentService.getDocumentByTitre("Le Petit Prince");
+            Document cdSupplementaire = documentService.getDocumentByTitre("Abbey Road");
+
+            // Créer des emprunts supplémentaires avec différentes dates
+
+            // 1. Créer un emprunt en retard
+            Calendar calRetard = Calendar.getInstance();
+            calRetard.add(Calendar.DAY_OF_MONTH, -30); // Il y a 30 jours
+            Date dateEmpruntRetard = calRetard.getTime();
+
+            Emprunt empruntRetard = new Emprunt(client, dateEmpruntRetard);
+            empruntRetard.setStatus("En cours");
+            empruntRepository.save(empruntRetard);
+
+            // Calculer une date de retour prévue déjà passée
+            Calendar calRetourPrevu = Calendar.getInstance();
+            calRetourPrevu.setTime(dateEmpruntRetard);
+            calRetourPrevu.add(Calendar.DAY_OF_MONTH, 14); // + 14 jours
+            Date dateRetourPrevu = calRetourPrevu.getTime();
+
+            // Créer un détail d'emprunt pour un document en retard
+            EmpruntDetail detailRetard = new EmpruntDetail(empruntRetard, livreSupplementaire, dateRetourPrevu);
+            detailRetard.setStatus("En retard");
+            empruntDetailRepository.save(detailRetard);
+
+            // Mettre à jour le nombre d'exemplaires
+            livreSupplementaire.setNombreExemplaires(livreSupplementaire.getNombreExemplaires() - 1);
+            documentRepository.save(livreSupplementaire);
+
+            // 2. Créer un emprunt déjà retourné
+            Calendar calRetourne = Calendar.getInstance();
+            calRetourne.add(Calendar.DAY_OF_MONTH, -20); // Il y a 20 jours
+            Date dateEmpruntRetourne = calRetourne.getTime();
+
+            Emprunt empruntRetourne = new Emprunt(client, dateEmpruntRetourne);
+            empruntRetourne.setStatus("Retourné");
+            empruntRepository.save(empruntRetourne);
+
+            // Calculer des dates pour cet emprunt
+            Calendar calRetourPrevuRetourne = Calendar.getInstance();
+            calRetourPrevuRetourne.setTime(dateEmpruntRetourne);
+            calRetourPrevuRetourne.add(Calendar.DAY_OF_MONTH, 14); // + 14 jours
+            Date dateRetourPrevuRetourne = calRetourPrevuRetourne.getTime();
+
+            Calendar calRetourEffectif = Calendar.getInstance();
+            calRetourEffectif.setTime(dateEmpruntRetourne);
+            calRetourEffectif.add(Calendar.DAY_OF_MONTH, 10); // + 10 jours (retourné à temps)
+            Date dateRetourEffectif = calRetourEffectif.getTime();
+
+            // Créer un détail d'emprunt pour un document déjà retourné
+            EmpruntDetail detailRetourne = new EmpruntDetail(empruntRetourne, cdSupplementaire, dateRetourPrevuRetourne);
+            detailRetourne.setDateRetourActuelle(dateRetourEffectif);
+            detailRetourne.setStatus("Retourné");
+            empruntDetailRepository.save(detailRetourne);
+
+            // 3. Afficher tous les emprunts du client
+            System.out.println(empruntService.afficherEmpruntsClient(client));
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'affichage des emprunts: " + e.getMessage());
             e.printStackTrace();
         }
 

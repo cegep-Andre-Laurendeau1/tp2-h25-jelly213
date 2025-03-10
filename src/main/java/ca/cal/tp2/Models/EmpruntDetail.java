@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Getter
@@ -45,10 +46,7 @@ public class EmpruntDetail {
     }
 
     public boolean isEnRetard() {
-        if (dateRetourActuelle == null && new Date().after(dateRetourPrevue)) {
-            return true;
-        }
-        return false;
+        return dateRetourActuelle == null && new Date().after(dateRetourPrevue);
     }
 
     public double calculAmende() {
@@ -71,5 +69,23 @@ public class EmpruntDetail {
         } else {
             status = "Emprunté";
         }
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Document: ").append(document.getTitre());
+        sb.append(" (").append(document.getType()).append(")\n");
+        sb.append("Date de retour prévue: ").append(dateFormat.format(dateRetourPrevue)).append("\n");
+
+        if (dateRetourActuelle != null) {
+            sb.append("Date de retour effective: ").append(dateFormat.format(dateRetourActuelle)).append("\n");
+        }
+
+        sb.append("Statut: ").append(status);
+
+        return sb.toString();
     }
 }

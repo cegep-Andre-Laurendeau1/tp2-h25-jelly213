@@ -1,13 +1,11 @@
 package ca.cal.tp2.Services;
 
-import ca.cal.tp2.Models.Document;
-import ca.cal.tp2.Models.Emprunt;
-import ca.cal.tp2.Models.EmpruntDetail;
-import ca.cal.tp2.Models.Emprunteur;
+import ca.cal.tp2.Models.*;
 import ca.cal.tp2.Persistences.Interface.DocumentRepository;
 import ca.cal.tp2.Persistences.Interface.EmpruntDetailRepository;
 import ca.cal.tp2.Persistences.Interface.EmpruntRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -106,6 +104,87 @@ public class EmpruntService {
      */
     public List<EmpruntDetail> getEmpruntDetailsByEmprunt(Emprunt emprunt) {
         return empruntDetailRepository.findByEmprunt(emprunt);
+    }
+
+    /**
+     * Génère une chaîne de caractères formatée contenant tous les emprunts d'un client
+     * @param emprunteur Le client dont on veut afficher les emprunts
+     * @return Une chaîne de caractères formatée
+     */
+    public String afficherEmpruntsClient(Emprunteur emprunteur) {
+        if (emprunteur == null) {
+            return "Client non spécifié";
+        }
+
+        List<Emprunt> emprunts = empruntRepository.findByEmprunteur(emprunteur);
+
+        if (emprunts.isEmpty()) {
+            return "Le client " + emprunteur.getName() + " n'a aucun emprunt en cours.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        sb.append("📚 LISTE DES EMPRUNTS DE ").append(emprunteur.getName().toUpperCase()).append(" 📚\n");
+        sb.append("Email: ").append(emprunteur.getEmail()).append("\n");
+        sb.append("Téléphone: ").append(emprunteur.getPhoneNumber()).append("\n");
+        sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        for (Emprunt emprunt : emprunts) {
+            sb.append("EMPRUNT #").append(emprunt.getBorrowId()).append("\n");
+            sb.append("Date d'emprunt: ").append(dateFormat.format(emprunt.getDateEmprunt())).append("\n");
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
+            List<EmpruntDetail> details = empruntDetailRepository.findByEmprunt(emprunt);
+            if (details.isEmpty()) {
+                sb.append("Aucun document associé à cet emprunt.\n");
+            } else {
+                sb.append("DOCUMENTS EMPRUNTÉS:\n\n");
+
+                for (EmpruntDetail detail : details) {
+                    Document doc = detail.getDocument();
+
+                    sb.append("- Titre: ").append(doc.getTitre()).append("\n");
+                    sb.append("  Type: ").append(doc.getType()).append("\n");
+                    sb.append("  Date de retour prévue: ").append(dateFormat.format(detail.getDateRetourPrevue())).append("\n");
+
+                    // Calculer le nombre de jours restants
+                    long diffTime = detail.getDateRetourPrevue().getTime() - new Date().getTime();
+                    long diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+                    if (detail.getDateRetourActuelle() != null) {
+                        sb.append("  Date de retour effective: ").append(dateFormat.format(detail.getDateRetourActuelle())).append("\n");
+
+                        // Vérifier si retourné en retard
+                        if (detail.getDateRetourActuelle().after(detail.getDateRetourPrevue())) {
+                            sb.append("  ⚠️ RETOURNÉ EN RETARD ⚠️\n");
+                        } else {
+                            sb.append("  ✅ Retourné à temps\n");
+                        }
+                    } else if (diffDays < 0) {
+                        sb.append("  ⚠️ EN RETARD DE ").append(Math.abs(diffDays)).append(" JOURS! ⚠️\n");
+                        sb.append("  Amende potentielle: ").append(String.format("%.2f", detail.calculAmende())).append(" $\n");
+                    } else {
+                        sb.append("  À retourner dans: ").append(diffDays).append(" jours\n");
+                    }
+
+                    if (doc.getType().equals("Livre")) {
+                        sb.append("  Auteur: ").append(((Livre)doc).getAuteur()).append("\n");
+                    } else if (doc.getType().equals("CD")) {
+                        sb.append("  Artiste: ").append(((CD)doc).getArtiste()).append("\n");
+                    } else if (doc.getType().equals("DVD")) {
+                        sb.append("  Réalisateur: ").append(((DVD)doc).getDirector()).append("\n");
+                    }
+
+                    sb.append("\n");
+                }
+            }
+
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+        }
+
+        return sb.toString();
     }
 
     /**
